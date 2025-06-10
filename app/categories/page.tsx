@@ -14,14 +14,17 @@ import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
+import { toast } from "@/components/ui/use-toast"
+import { ToastAction } from "@/components/ui/toast"
+import { useCart } from "@/contexts/cart-context";
 
-// Mock product data
+// Mock product data with Rwandan names and francs
 const allProducts = [
   {
-    id: 1,
-    name: "Kigali Pattern Shirt",
-    price: 89.99,
-    originalPrice: 120.00,
+    id: "1", // Changed to string to match CartItem id type
+    name: "Umushanana Pattern Shirt",
+    price: 89000,
+    originalPrice: 120000,
     image: "https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg?auto=compress&cs=tinysrgb&w=600",
     category: "Men",
     subcategory: "Shirts",
@@ -34,9 +37,9 @@ const allProducts = [
     inStock: true
   },
   {
-    id: 2,
-    name: "Amahoro Dress",
-    price: 129.99,
+    id: "2",
+    name: "Amahoro Traditional Dress",
+    price: 129000,
     image: "https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=600",
     category: "Women",
     subcategory: "Dresses",
@@ -48,9 +51,9 @@ const allProducts = [
     inStock: true
   },
   {
-    id: 3,
-    name: "Unity Jacket",
-    price: 159.99,
+    id: "3",
+    name: "Imigongo Design Jacket",
+    price: 159000,
     image: "https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=600",
     category: "Men",
     subcategory: "Jackets",
@@ -62,10 +65,10 @@ const allProducts = [
     inStock: true
   },
   {
-    id: 4,
-    name: "Akagera Scarf",
-    price: 49.99,
-    originalPrice: 65.00,
+    id: "4",
+    name: "Akagera Safari Scarf",
+    price: 49000,
+    originalPrice: 65000,
     image: "https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg?auto=compress&cs=tinysrgb&w=600",
     category: "Accessories",
     subcategory: "Scarves",
@@ -78,9 +81,9 @@ const allProducts = [
     inStock: true
   },
   {
-    id: 5,
-    name: "Heritage Blouse",
-    price: 95.99,
+    id: "5",
+    name: "Rwandan Heritage Blouse",
+    price: 95000,
     image: "https://images.pexels.com/photos/1040881/pexels-photo-1040881.jpeg?auto=compress&cs=tinysrgb&w=600",
     category: "Women",
     subcategory: "Blouses",
@@ -92,9 +95,9 @@ const allProducts = [
     inStock: true
   },
   {
-    id: 6,
-    name: "Cultural Pants",
-    price: 79.99,
+    id: "6",
+    name: "Kivu Lake Pants",
+    price: 79000,
     image: "https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg?auto=compress&cs=tinysrgb&w=600",
     category: "Men",
     subcategory: "Pants",
@@ -106,9 +109,9 @@ const allProducts = [
     inStock: false
   },
   {
-    id: 7,
-    name: "Kids Traditional Set",
-    price: 69.99,
+    id: "7",
+    name: "Kinyarwanda Kids Set",
+    price: 69000,
     image: "https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=600",
     category: "Kids",
     subcategory: "Sets",
@@ -120,10 +123,10 @@ const allProducts = [
     inStock: true
   },
   {
-    id: 8,
-    name: "Elegant Handbag",
-    price: 119.99,
-    originalPrice: 150.00,
+    id: "8",
+    name: "Agaseke Inspired Handbag",
+    price: 119000,
+    originalPrice: 150000,
     image: "https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg?auto=compress&cs=tinysrgb&w=600",
     category: "Accessories",
     subcategory: "Bags",
@@ -136,9 +139,9 @@ const allProducts = [
     inStock: true
   },
   {
-    id: 9,
-    name: "Summer Kimono",
-    price: 139.99,
+    id: "9",
+    name: "Nyungwe Forest Kimono",
+    price: 139000,
     image: "https://images.pexels.com/photos/1040881/pexels-photo-1040881.jpeg?auto=compress&cs=tinysrgb&w=600",
     category: "Women",
     subcategory: "Kimonos",
@@ -157,15 +160,74 @@ export default function CategoriesPage() {
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([])
   const [selectedColors, setSelectedColors] = useState<string[]>([])
   const [selectedSizes, setSelectedSizes] = useState<string[]>([])
-  const [priceRange, setPriceRange] = useState([0, 200])
+  const [priceRange, setPriceRange] = useState([0, 200000])
   const [sortBy, setSortBy] = useState("featured")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [showOnlyInStock, setShowOnlyInStock] = useState(false)
   const [showOnlyNew, setShowOnlyNew] = useState(false)
   const [showOnlySale, setShowOnlySale] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const [wishlist, setWishlist] = useState<number[]>([])
+  const [wishlist, setWishlist] = useState<string[]>([])
   const itemsPerPage = 9
+
+  // Use the cart context instead of local state
+  const { addItem, count: cartCount } = useCart();
+
+  // Properly typed addToCart function using the cart context
+const addToCart = (product: (typeof allProducts)[0]) => {
+  // Default to the first size and product's color if none selected
+  const selectedSize = selectedSizes.length > 0 && product.size.some(s => selectedSizes.includes(s)) 
+    ? selectedSizes.find(s => product.size.includes(s))
+    : product.size[0];
+  
+  const selectedColor = selectedColors.length > 0 && selectedColors.includes(product.color)
+    ? product.color
+    : product.color;
+  
+  addItem({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    image: product.image,
+    quantity: 1,
+    color: selectedColor,
+    size: selectedSize || "One Size",
+  });
+  
+  toast({
+  title: "Added to cart!",
+  description: (
+    <div>
+      <div className="flex items-center gap-2 mb-2">
+        <ShoppingBag className="h-5 w-5" />
+        <span>Added to cart!</span>
+      </div>
+      <div className="flex items-center gap-3 mt-2">
+        <div className="relative w-10 h-10 rounded-md overflow-hidden bg-gray-100">
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            className="object-cover"
+          />
+        </div>
+        <div>
+          <p className="font-medium text-sm">{product.name}</p>
+          <p className="text-xs text-gray-500">
+            {selectedColor}, Size {selectedSize || "One Size"}
+          </p>
+        </div>
+      </div>
+    </div>
+  ),
+  action: (
+    <ToastAction altText="View Cart" asChild>
+      <Link href="/cart">View Cart</Link>
+    </ToastAction>
+  ),
+  variant: "default",
+});
+};
 
   // Get unique values for filters
   const categories = [...new Set(allProducts.map(p => p.category))]
@@ -260,7 +322,7 @@ export default function CategoriesPage() {
     setSelectedSubcategories([])
     setSelectedColors([])
     setSelectedSizes([])
-    setPriceRange([0, 200])
+    setPriceRange([0, 200000])
     setShowOnlyInStock(false)
     setShowOnlyNew(false)
     setShowOnlySale(false)
@@ -268,16 +330,41 @@ export default function CategoriesPage() {
   }
 
   // Toggle wishlist
-  const toggleWishlist = (productId: number) => {
+  const toggleWishlist = (productId: string) => {
     setWishlist(prev => 
       prev.includes(productId) 
         ? prev.filter(id => id !== productId)
         : [...prev, productId]
     )
+    
+    // Show toast notification
+    if (!wishlist.includes(productId)) {
+      toast({
+        title: "Added to wishlist!",
+        description: "This item has been added to your wishlist.",
+        action: <ToastAction altText="View Wishlist">View Wishlist</ToastAction>,
+      })
+    } else {
+      toast({
+        title: "Removed from wishlist",
+        description: "This item has been removed from your wishlist.",
+        variant: "destructive",
+      })
+    }
   }
 
   // Active filters count
   const activeFiltersCount = selectedCategories.length + selectedSubcategories.length + selectedColors.length + selectedSizes.length + (showOnlyInStock ? 1 : 0) + (showOnlyNew ? 1 : 0) + (showOnlySale ? 1 : 0)
+
+  // Format price in Rwandan Francs
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-RW', {
+      style: 'currency',
+      currency: 'RWF',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  }
 
   const FilterContent = () => (
     <div className="space-y-6">
@@ -304,24 +391,33 @@ export default function CategoriesPage() {
               id="in-stock" 
               checked={showOnlyInStock}
               onCheckedChange={setShowOnlyInStock}
+              className="border-gray-400 data-[state=checked]:border-[#3c5e9e] data-[state=checked]:bg-[#3c5e9e]"
             />
-            <label htmlFor="in-stock" className="text-sm font-medium">In Stock Only</label>
+            <label htmlFor="in-stock" className="text-sm font-medium leading-none text-gray-700 cursor-pointer select-none">
+              In Stock Only
+            </label>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox 
               id="new-arrivals" 
               checked={showOnlyNew}
               onCheckedChange={setShowOnlyNew}
+              className="border-gray-400 data-[state=checked]:border-[#3c5e9e] data-[state=checked]:bg-[#3c5e9e]"
             />
-            <label htmlFor="new-arrivals" className="text-sm font-medium">New Arrivals</label>
+            <label htmlFor="new-arrivals" className="text-sm font-medium leading-none text-gray-700 cursor-pointer select-none">
+              New Arrivals
+            </label>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox 
               id="on-sale" 
               checked={showOnlySale}
               onCheckedChange={setShowOnlySale}
+              className="border-gray-400 data-[state=checked]:border-[#3c5e9e] data-[state=checked]:bg-[#3c5e9e]"
             />
-            <label htmlFor="on-sale" className="text-sm font-medium">On Sale</label>
+            <label htmlFor="on-sale" className="text-sm font-medium leading-none text-gray-700 cursor-pointer select-none">
+              On Sale
+            </label>
           </div>
         </div>
       </div>
@@ -342,8 +438,9 @@ export default function CategoriesPage() {
                     setSelectedCategories(selectedCategories.filter(c => c !== category))
                   }
                 }}
+                className="border-gray-400 data-[state=checked]:border-[#3c5e9e] data-[state=checked]:bg-[#3c5e9e]"
               />
-              <label htmlFor={`category-${category}`} className="text-sm font-medium">
+              <label htmlFor={`category-${category}`} className="text-sm font-medium leading-none text-gray-700 cursor-pointer select-none">
                 {category} ({allProducts.filter(p => p.category === category).length})
               </label>
             </div>
@@ -367,8 +464,9 @@ export default function CategoriesPage() {
                     setSelectedSubcategories(selectedSubcategories.filter(s => s !== subcategory))
                   }
                 }}
+                className="border-gray-400 data-[state=checked]:border-[#3c5e9e] data-[state=checked]:bg-[#3c5e9e]"
               />
-              <label htmlFor={`subcategory-${subcategory}`} className="text-sm font-medium">
+              <label htmlFor={`subcategory-${subcategory}`} className="text-sm font-medium leading-none text-gray-700 cursor-pointer select-none">
                 {subcategory}
               </label>
             </div>
@@ -383,13 +481,13 @@ export default function CategoriesPage() {
           <Slider
             value={priceRange}
             onValueChange={setPriceRange}
-            max={300}
-            step={5}
+            max={300000}
+            step={5000}
             className="w-full"
           />
           <div className="flex items-center justify-between text-sm text-gray-600">
-            <span>${priceRange[0]}</span>
-            <span>${priceRange[1]}</span>
+            <span>{formatPrice(priceRange[0])}</span>
+            <span>{formatPrice(priceRange[1])}</span>
           </div>
           <div className="flex items-center gap-2">
             <Input
@@ -397,15 +495,15 @@ export default function CategoriesPage() {
               placeholder="Min"
               value={priceRange[0]}
               onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
-              className="w-20 text-sm"
+              className="w-full text-sm"
             />
             <span className="text-gray-500">to</span>
             <Input
               type="number"
               placeholder="Max"
               value={priceRange[1]}
-              onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 300])}
-              className="w-20 text-sm"
+              onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 300000])}
+              className="w-full text-sm"
             />
           </div>
         </div>
@@ -426,24 +524,26 @@ export default function CategoriesPage() {
             }
             
             return (
-              <button
-                key={color}
-                onClick={() => {
-                  if (selectedColors.includes(color)) {
-                    setSelectedColors(selectedColors.filter(c => c !== color))
-                  } else {
-                    setSelectedColors([...selectedColors, color])
-                  }
-                }}
-                className={cn(
-                  "w-8 h-8 rounded-full transition-all duration-200",
-                  colorClasses[color as keyof typeof colorClasses],
-                  selectedColors.includes(color) 
-                    ? "ring-2 ring-[#3c5e9e] ring-offset-2 scale-110" 
-                    : "hover:scale-105"
-                )}
-                title={color}
-              />
+              <div key={color} className="flex flex-col items-center gap-1">
+                <button
+                  onClick={() => {
+                    if (selectedColors.includes(color)) {
+                      setSelectedColors(selectedColors.filter(c => c !== color))
+                    } else {
+                      setSelectedColors([...selectedColors, color])
+                    }
+                  }}
+                  className={cn(
+                    "w-8 h-8 rounded-full transition-all duration-200",
+                    colorClasses[color as keyof typeof colorClasses],
+                    selectedColors.includes(color) 
+                      ? "ring-2 ring-[#3c5e9e] ring-offset-2 scale-110" 
+                      : "hover:scale-105"
+                  )}
+                  aria-label={`Select ${color} color`}
+                />
+                <span className="text-xs text-gray-700">{color}</span>
+              </div>
             )
           })}
         </div>
@@ -467,7 +567,7 @@ export default function CategoriesPage() {
                 "px-3 py-2 border rounded-md text-sm font-medium transition-all duration-200",
                 selectedSizes.includes(size)
                   ? "bg-[#3c5e9e] text-white border-[#3c5e9e]"
-                  : "border-gray-300 hover:border-[#3c5e9e] hover:text-[#3c5e9e]"
+                  : "border-gray-300 text-gray-700 hover:border-[#3c5e9e] hover:text-[#3c5e9e]"
               )}
             >
               {size}
@@ -488,6 +588,18 @@ export default function CategoriesPage() {
             Explore our diverse range of clothing and accessories, each piece crafted with attention to detail and
             cultural significance.
           </p>
+          
+          {/* Cart indicator */}
+          {cartCount > 0 && (
+            <div className="mt-6">
+              <Button variant="secondary" className="bg-[#f4fc0a] text-[#3c5e9e] hover:bg-[#f4fc0a]/80" asChild>
+                <Link href="/cart" className="flex items-center">
+                  <ShoppingBag className="w-5 h-5 mr-2" />
+                  View Cart ({cartCount} items)
+                </Link>
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -711,7 +823,11 @@ export default function CategoriesPage() {
                               variant="secondary" 
                               size="icon" 
                               className="rounded-full h-10 w-10 bg-white/90 hover:bg-white shadow-lg"
-                              onClick={() => toggleWishlist(product.id)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                toggleWishlist(product.id);
+                              }}
                             >
                               <Heart className={cn(
                                 "h-4 w-4 transition-colors",
@@ -723,6 +839,13 @@ export default function CategoriesPage() {
                               size="icon" 
                               className="rounded-full h-10 w-10 bg-white/90 hover:bg-white shadow-lg"
                               disabled={!product.inStock}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (product.inStock) {
+                                  addToCart(product);
+                                }
+                              }}
                             >
                               <ShoppingBag className="h-4 w-4" />
                             </Button>
@@ -746,9 +869,9 @@ export default function CategoriesPage() {
                             
                             <div className="flex items-center justify-between mb-3">
                               <div className="flex items-center gap-2">
-                                <span className="font-bold text-xl text-[#3c5e9e]">${product.price}</span>
+                                <span className="font-bold text-xl text-[#3c5e9e]">{formatPrice(product.price)}</span>
                                 {product.originalPrice && (
-                                  <span className="text-sm text-gray-500 line-through">${product.originalPrice}</span>
+                                  <span className="text-sm text-gray-500 line-through">{formatPrice(product.originalPrice)}</span>
                                 )}
                               </div>
                               <div className="flex">
@@ -765,7 +888,7 @@ export default function CategoriesPage() {
                               <p className="text-sm text-gray-600 mb-2">Available sizes:</p>
                               <div className="flex gap-1">
                                 {product.size.map(size => (
-                                  <Badge key={size} variant="outline" className="text-xs">
+                                  <Badge key={size} variant="outline" className="text-xs text-gray-700 border-gray-300">
                                     {size}
                                   </Badge>
                                 ))}
@@ -776,6 +899,11 @@ export default function CategoriesPage() {
                           <Button 
                             className="w-full bg-[#3c5e9e] hover:bg-[#2a4a7a] text-white transition-colors duration-300"
                             disabled={!product.inStock}
+                            onClick={() => {
+                              if (product.inStock) {
+                                addToCart(product);
+                              }
+                            }}
                           >
                             {product.inStock ? "Add to Cart" : "Out of Stock"}
                           </Button>

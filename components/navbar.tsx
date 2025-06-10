@@ -28,10 +28,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import logo from "@/public/2q3tB7b0YkHYtlMxBhC8anVKrc1.svg";
+import { useCart } from "@/contexts/cart-context";
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const { count } = useCart(); // Get cart count from context
 
   useEffect(() => {
     const handleScroll = () => {
@@ -134,33 +137,39 @@ export function Navbar() {
                 )}
               </div>
 
-              {/* Wishlist */}
-              {/* 
               {/* Shopping Cart */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:bg-[#f4fc0a]/20 hover:text-[#f4fc0a] text-white/90 transition-all duration-300 relative hover:scale-105"
-              >
-                <ShoppingBag className="h-5 w-5 drop-shadow-sm" />
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-gradient-to-r from-[#f4fc0a] to-[#e6f000] text-[#3c5e9e] font-bold shadow-lg">
-                  3
-                </Badge>
-              </Button>
+              <Link href="/cart">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-[#f4fc0a]/20 hover:text-[#f4fc0a] text-white/90 transition-all duration-300 relative hover:scale-105"
+                >
+                  <ShoppingBag className="h-5 w-5 drop-shadow-sm" />
+                  {count > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-gradient-to-r from-[#f4fc0a] to-[#e6f000] text-[#3c5e9e] font-bold shadow-lg">
+                      {count}
+                    </Badge>
+                  )}
+                </Button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
             <div className="flex items-center md:hidden gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative hover:bg-[#f4fc0a]/20 hover:text-[#f4fc0a] text-white/90 transition-all duration-300 hover:scale-105"
-              >
-                <ShoppingBag className="h-5 w-5 drop-shadow-sm" />
-                <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 bg-gradient-to-r from-[#f4fc0a] to-[#e6f000] text-[#3c5e9e] text-xs font-bold shadow-lg">
-                  3
-                </Badge>
-              </Button>
+              <Link href="/cart">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative hover:bg-[#f4fc0a]/20 hover:text-[#f4fc0a] text-white/90 transition-all duration-300 hover:scale-105"
+                >
+                  <ShoppingBag className="h-5 w-5 drop-shadow-sm" />
+                  {count > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 bg-gradient-to-r from-[#f4fc0a] to-[#e6f000] text-[#3c5e9e] text-xs font-bold shadow-lg">
+                      {count}
+                    </Badge>
+                  )}
+                </Button>
+              </Link>
               <Button
                 variant="ghost"
                 size="icon"
@@ -210,29 +219,6 @@ export function Navbar() {
                   <span className="drop-shadow-sm">{link.name}</span>
                 </Link>
               ))}
-
-              {/* <div className="border-t border-[#f4fc0a]/20 pt-4 mt-4">
-                <Link
-                  href="/wishlist"
-                  className="flex items-center gap-3 text-white/90 hover:text-red-300 hover:bg-red-500/20 transition-all duration-300 py-3 px-4 rounded-lg font-medium"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Heart className="h-5 w-5 drop-shadow-sm" />
-                  <span className="drop-shadow-sm">Wishlist</span>
-                  <Badge className="ml-auto bg-red-500 text-white shadow-lg">
-                    2
-                  </Badge>
-                </Link>
-
-                <Link
-                  href="/account"
-                  className="flex items-center gap-3 text-white/90 hover:text-[#f4fc0a] hover:bg-white/10 transition-all duration-300 py-3 px-4 rounded-lg font-medium"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <User className="h-5 w-5 drop-shadow-sm" />
-                  <span className="drop-shadow-sm">My Account</span>
-                </Link>
-              </div> */}
             </nav>
           </div>
         </div>
