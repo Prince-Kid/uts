@@ -311,7 +311,7 @@ const [currentTestimonial, setCurrentTestimonial] = useState(0);
               {
                 name: "Women",
                 image:
-                  "https://res.cloudinary.com/dvhfu2a0u/image/upload/v1733927698/skvqoummhwjabe8guehp.png",
+                  "https://res.cloudinary.com/dvhfu2a0u/image/upload/v1733928697/muenmhu1m9kg7s1likwe.png",
                 link: "/categories",
                 count: "Quality Products",
               },
@@ -424,7 +424,7 @@ const [currentTestimonial, setCurrentTestimonial] = useState(0);
                     price: "45000 RWF",
                     originalPrice: "50000 RWF",
                     image:
-                      "https://res.cloudinary.com/dvhfu2a0u/image/upload/v1733928431/rqa0tmbv1o1sh00apuq9.png",
+                      "https://res.cloudinary.com/dvhfu2a0u/image/upload/v1733928697/muenmhu1m9kg7s1likwe.png",
                     category: "Women",
                     rating: 4,
                     isBestseller: true,
@@ -443,7 +443,7 @@ const [currentTestimonial, setCurrentTestimonial] = useState(0);
                     price: "30000 RWF",
                     originalPrice: "35000 RWF",
                     image:
-                      "https://res.cloudinary.com/dvhfu2a0u/image/upload/v1733927698/kji8rzjrhe0yu5gnxtxh.png",
+                      "https://res.cloudinary.com/dvhfu2a0u/image/upload/v1733928432/xew64cujymb7bisbqk41.png",
                     category: "Kids",
                     rating: 4,
                     discount: "23%",
@@ -541,15 +541,17 @@ const [currentTestimonial, setCurrentTestimonial] = useState(0);
       
            </Tabs>
 
-          <div className="flex justify-center mt-12">
-            <Button
-              size="lg"
-              variant="outline"
-              className="gap-2 border-[#3c5e9e] text-[#3c5e9e] hover:bg-[#3c5e9e] hover:text-white px-8 py-6 text-lg"
-            >
-              View All Products <ArrowRight className="h-5 w-5" />
-            </Button>
-          </div>
+        <div className="flex justify-center mt-12">
+  <Link href="/categories">
+    <Button
+      size="lg"
+      variant="outline"
+      className="gap-2 border-[#3c5e9e] text-[#3c5e9e] hover:bg-[#3c5e9e] hover:text-white px-8 py-6 text-lg"
+    >
+      View All Products <ArrowRight className="h-5 w-5" />
+    </Button>
+  </Link>
+</div>
         </div>
       </section>
 
