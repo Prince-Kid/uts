@@ -114,40 +114,37 @@ export function Footer() {
               <li className="flex items-start group">
                 <MapPin className="h-5 w-5 mr-3 shrink-0 mt-0.5 text-white/70 group-hover:text-white transition-colors" />
                 <span className="text-white/80 group-hover:text-white transition-colors">
-                  123 Fashion Street<br />Kigali, Rwanda
+                   UTS <br />NYABIHU, Rwanda
                 </span>
               </li>
               <li className="flex items-center group">
                 <Phone className="h-5 w-5 mr-3 shrink-0 text-white/70 group-hover:text-white transition-colors" />
-                <span className="text-white/80 group-hover:text-white transition-colors">+250 123 456 789</span>
+                <span className="text-white/80 group-hover:text-white transition-colors">+250 785 954 141</span>
               </li>
               <li className="flex items-center group">
                 <Mail className="h-5 w-5 mr-3 shrink-0 text-white/70 group-hover:text-white transition-colors" />
-                <span className="text-white/80 group-hover:text-white transition-colors">info@utsrwanda.com</span>
+                <span className="text-white/80 group-hover:text-white transition-colors">twizerimanaschadrack@gmail.com</span>
               </li>
             </ul>
           </div>
 
           {/* Newsletter */}
-          <div>
-            <h3 className="font-heading text-xl font-semibold mb-6 relative">
-              Stay Updated
-              <div className="absolute -bottom-2 left-0 w-12 h-0.5 bg-gradient-to-r from-white to-transparent rounded-full"></div>
-            </h3>
-            <p className="mb-6 text-white/80 leading-relaxed">
-              Subscribe to receive updates on new collections, exclusive offers, and cultural insights.
-            </p>
-            <form className="space-y-3">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 backdrop-blur-sm focus:bg-white/15 focus:border-white/40 transition-all duration-300"
-              />
-              <Button className="w-full bg-white/15 text-white border border-white/20 hover:bg-white/25 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02]">
-                Subscribe Now
-              </Button>
-            </form>
-          </div>
+        <div>
+  <h3 className="font-heading text-xl font-semibold mb-6 relative">
+    Stay Updated
+    <div className="absolute -bottom-2 left-0 w-12 h-0.5 bg-gradient-to-r from-white to-transparent rounded-full"></div>
+  </h3>
+  
+  <p className="text-white/80 mb-4">
+    Stay tuned for our latest designs, seasonal collections, and traditional Rwandan-inspired fashion.
+  </p>
+  
+  <p className="text-white/80 mb-4">
+    Check back regularly to discover new arrivals for children and adults, with authentic craftsmanship that celebrates our heritage.
+  </p>
+  
+ 
+</div>
         </div>
 
         {/* Bottom section */}

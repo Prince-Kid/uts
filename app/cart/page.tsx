@@ -426,34 +426,11 @@ const generateAdminEmailHTML = (orderData: any) => {
               </p>
             </div>
             
-            <div className="bg-gray-50 rounded-lg p-5 mb-6">
-              <h2 className="font-medium text-gray-900 mb-4">Order Summary</h2>
-              <div className="space-y-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Total Items:</span>
-                  <span className="font-medium">{items.reduce((acc, item) => acc + item.quantity, 0)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Order Total:</span>
-                  <span className="font-medium">{formatPrice(total)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Estimated Delivery:</span>
-                  <span className="font-medium">3-5 business days</span>
-                </div>
-              </div>
-            </div>
+            
             
             <div className="flex flex-col md:flex-row gap-6 mb-8">
               <Button asChild className="bg-[#3c5e9e] hover:bg-[#2a4a7a] text-white flex-1">
                 <Link href="/categories">Continue Shopping</Link>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="border-[#3c5e9e] text-[#3c5e9e] hover:bg-[#3c5e9e]/10 flex-1"
-                onClick={() => window.print()} // Simple way to print/save the order
-              >
-                Save Order Details
               </Button>
             </div>
             
@@ -462,7 +439,7 @@ const generateAdminEmailHTML = (orderData: any) => {
               <AlertTitle className="text-blue-800">Need Help?</AlertTitle>
               <AlertDescription className="text-blue-700">
                 If you have any questions about your order, please contact our customer service
-                at <a href="mailto:support@utsrwanda.com" className="text-[#3c5e9e] font-medium">support@utsrwanda.com</a>
+                at <a href="mailto:twizerimanaschadrack@gmail.com" className="text-[#3c5e9e] font-medium">twizerimanaschadrack@gmail.com</a>
               </AlertDescription>
             </Alert>
           </CardContent>
@@ -788,12 +765,7 @@ const generateAdminEmailHTML = (orderData: any) => {
               totaling {formatPrice(total)}. A confirmation will be generated that you can save or print.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-md p-3 flex items-start gap-3 my-2">
-            <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
-            <p className="text-sm text-amber-800 dark:text-amber-300">
-              Since this is a demo, no actual order will be placed. An email template will open in a new tab that you can save for your reference.
-            </p>
-          </div>
+         
           <AlertDialogFooter>
             <AlertDialogCancel className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">Cancel</AlertDialogCancel>
             <AlertDialogAction 
